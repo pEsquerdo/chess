@@ -1,0 +1,2 @@
+class MatchRoom < ApplicationRecord
+end

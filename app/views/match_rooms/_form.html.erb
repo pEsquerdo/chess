@@ -1,0 +1,22 @@
+<%= form_with(model: match_room) do |form| %>
+  <% if match_room.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(match_room.errors.count, "error") %> prohibited this match_room from being saved:</h2>
+
+      <ul>
+        <% match_room.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
