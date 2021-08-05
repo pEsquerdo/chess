@@ -4,4 +4,6 @@ class Player < ApplicationRecord
 
   has_many :pieces
   has_many :moves
+
+  validates_presence_of :color
 end

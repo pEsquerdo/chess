@@ -1,9 +1,27 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Name:</strong>
+  <strong>Match room name:</strong>
   <%= @match_room.name %>
+  (<%= @match_room.duration %> s)
+  <%= link_to 'Edit', edit_match_room_path(@match_room) %> |
+  <%= link_to 'Back', match_rooms_path %>
 </p>
 
-<%= link_to 'Edit', edit_match_room_path(@match_room) %> |
-<%= link_to 'Back', match_rooms_path %>
+<% @match_room.players.each do |player| %>
+  <p>
+    <strong><%= player.color.capitalize %> pieces:</strong>
+    <% player.pieces.each do |piece| %>
+      <%= button_to piece.family.capitalize + '|' + piece.coordinates %>
+    <% end %>
+  </p>
+<% end %>
+
+<p>
+  <strong>Moves:</strong>
+  <% @match_room.moves.reverse.each_with_index do |move, i| %>
+    <p>
+      <%= i + 1 %>: <%= move.notation || 'waiting for ' + move.turn %> (<%= move.duration %> s)
+    </p>
+  <% end %>
+</p>
