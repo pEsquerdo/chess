@@ -1,0 +1,10 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @piece.player.color %> | <%= @piece.family %> | <%= @piece.coordinates %></h1>
+
+<p>
+  <strong>Permitted moves:</strong>
+  <% @permitted_moves.each do |move| %>
+    <%= link_to move, '#' %>
+  <% end %>
+</p>

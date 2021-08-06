@@ -12,7 +12,7 @@
   <p>
     <strong><%= player.color.capitalize %> pieces:</strong>
     <% player.pieces.each do |piece| %>
-      <%= button_to piece.family.capitalize + '|' + piece.coordinates %>
+      <%= link_to piece.family.capitalize + ' | ' + piece.coordinates, "#{piece.id}" %>
     <% end %>
   </p>
 <% end %>
