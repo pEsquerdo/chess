@@ -11,15 +11,15 @@
 <% @match_room.players.each do |player| %>
   <p>
     <strong><%= player.color.capitalize %> pieces:</strong>
-    <% player.pieces.each do |piece| %>
-      <%= link_to piece.family.capitalize + ' | ' + piece.coordinates, "#{piece.id}" %>
+    <% player.in_game_pieces.each do |piece| %>
+      (<%= link_to piece.family.capitalize + ' | ' + piece.coordinates, permitted_moves_path(@move, piece_id: piece) %>)
     <% end %>
   </p>
 <% end %>
 
 <p>
   <strong>Moves:</strong>
-  <% @match_room.moves.reverse.each_with_index do |move, i| %>
+  <% @match_room.moves.each_with_index do |move, i| %>
     <p>
       <%= i + 1 %>: <%= move.notation || 'waiting for ' + move.turn %> (<%= move.duration %> s)
     </p>

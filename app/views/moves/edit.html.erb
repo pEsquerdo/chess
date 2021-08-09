@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @piece.player.color %> | <%= @piece.family %> | <%= @piece.coordinates %></h1>
+
+<p>
+  <strong>Permitted moves:</strong>
+  <% @permitted_moves.each do |move_notation| %>
+    <%= form_with url: move_to_path(@move), method: :put do |f| %>
+      <%= f.hidden_field :move_notation, value: move_notation %>
+      <%= f.hidden_field :piece_id, value: @piece.id %>
+      <%= f.submit move_notation %>
+    <% end %>
+  <% end %>
+</p>

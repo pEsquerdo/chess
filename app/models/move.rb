@@ -2,14 +2,13 @@ class Move < ApplicationRecord
   belongs_to :match_room
   belongs_to :player
 
+  def to(piece, move_notation)
+    square = move_notation[-2..]
+    piece.update(coordinates: square)
 
-  # colocar este metodo na classe Piece
-  def move_piece(piece, new_coordinates)
-    piece.update(coordinates: new_coordinates)
-    # update this move, create another move and then ...
-    disputed_square = player.adversary.pieces_coordinates & new_coordinates
+    return unless move_notation.include? 'x'
 
-    capturate_piece disputed_square
+    capturate_piece square
   end
 
   def capturate_piece(square)

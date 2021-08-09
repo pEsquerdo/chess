@@ -1,5 +1,5 @@
 class MatchRoomsController < ApplicationController
-  before_action :set_match_room, only: %i[show edit update destroy]
+  before_action :set_match_room, :set_move, only: %i[show edit update destroy]
 
   # GET /match_rooms or /match_rooms.json
   def index
@@ -59,6 +59,14 @@ class MatchRoomsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_match_room
     @match_room = MatchRoom.find(params[:id])
+  end
+
+  def set_move
+    @move = @match_room.moves.last
+
+    return unless @move.ended_at
+
+    @move = @match_room.moves.create(started_at: @move.ended_at, player: @move.player.adversary)
   end
 
   # Only allow a list of trusted parameters through.
