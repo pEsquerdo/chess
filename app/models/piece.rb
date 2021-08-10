@@ -28,9 +28,9 @@ class Piece < ApplicationRecord
       pawn: pawn_moves[:typical],
       knight: knight_moves[:typical].map { |m| "N#{m}" },
       bishop: bishop_moves[:typical].map { |m| "B#{m}" },
-      rook: rook_moves[:capture].map { |m| "R#{m}" },
-      queen: queen_moves[:capture].map { |m| "Q#{m}" },
-      king: king_moves[:capture].map { |m| "K#{m}" }
+      rook: rook_moves[:typical].map { |m| "R#{m}" },
+      queen: queen_moves[:typical].map { |m| "Q#{m}" },
+      king: king_moves[:typical].map { |m| "K#{m}" }
     }
   end
 
@@ -59,54 +59,107 @@ class Piece < ApplicationRecord
   def pawn_moves
     typical = white? ? [go(0, 1)]            : [go(0, -1)]
     capture = white? ? [go(1, 1), go(-1, 1)] : [go(1, -1), go(-1, -1)]
+    special = []
+
+    special += [go(0, 2)] if white? && coordinates[1].eql?('2') # first move white pawn
+    special += [go(0, -2)] if black? && coordinates[1].eql?('7') # first move black pawn
 
     {
       typical: typical & board_edge - player.adversary.pieces_coordinates - player.pieces_coordinates,
 
-      special: player.moves.size.eql?(1) && (white? ? [go(0, 2)] : [go(0, -2)]) || [],
+      special: special & board_edge - player.adversary.pieces_coordinates - player.pieces_coordinates,
 
       capture: capture & board_edge & player.adversary.pieces_coordinates
     }
   end
 
   def knight_moves
-    typical = [go(2, 1), go(2, -1), go(-2, 1), go(-2, -1), go(1, 2), go(1, -2), go(-1, 2), go(-1, -2)]
-    permitted = typical & board_edge
+    move_type_L = [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]]
+    typical = move_type_L.map { |pair| go(*pair) }
 
     {
-      typical: permitted - player.adversary.pieces_coordinates - player.pieces_coordinates,
+      typical: typical & board_edge - player.adversary.pieces_coordinates - player.pieces_coordinates,
 
       special: [],
 
-      capture: permitted & player.adversary.pieces_coordinates
+      capture: typical & board_edge & player.adversary.pieces_coordinates
     }
   end
 
-  # def bishop_moves
-  #   typical = []
-  #   capture = []
-  #   allied_coordinates = player.pieces_coordinates
-  #   adversary_coordinates = player.adversary.pieces_coordinates
-  #   [1, -1].product([-1, 1]).each do |pair|
-  #     7.times do
-  #       square = go(*pair)
+  def bishop_moves
+    typical = []
+    capture = []
+    diagonal_move = [[1, -1], [1, 1], [-1, -1], [-1, 1]]
+    diagonal_move.each do |p|
+      (1..7).each do |n|
+        square = go(n * p[0], n * p[1])
 
-  #       adversary_coordinates.include?(square) && (capture + [square]) && break
+        (capture += [square]) && break if player.adversary.pieces_coordinates.include?(square)
 
-  #       break if allied_coordinates.include? square
+        break if player.pieces_coordinates.include?(square) || board_edge.exclude?(square)
 
-  #       typical + [square]
-  #     end
-  #   end
+        typical += [square]
+      end
+    end
 
-  #   {
-  #     typical: typical & board_edge,
+    {
+      typical: typical & board_edge,
 
-  #     special: [],
+      special: [],
 
-  #     capture: capture & board_edge
-  #   }
-  # end
+      capture: capture & board_edge
+    }
+  end
+
+  def rook_moves
+    typical = []
+    capture = []
+    ortogonal_move = [[0, -1], [0, 1], [-1, 0], [1, 0]]
+    ortogonal_move.each do |p|
+      (1..7).each do |n|
+        square = go(n * p[0], n * p[1])
+
+        (capture += [square]) && break if player.adversary.pieces_coordinates.include?(square)
+
+        break if player.pieces_coordinates.include?(square) || board_edge.exclude?(square)
+
+        typical += [square]
+      end
+    end
+
+    {
+      typical: typical & board_edge,
+
+      special: [],
+
+      capture: capture & board_edge
+    }
+  end
+
+  def queen_moves
+    {
+      typical: bishop_moves[:typical] + rook_moves[:typical],
+
+      special: [],
+
+      capture: bishop_moves[:capture] + rook_moves[:capture]
+    }
+  end
+
+  def king_moves
+    diagonal_move = [[1, -1], [1, 1], [-1, -1], [-1, 1]]
+    ortogonal_move = [[0, -1], [0, 1], [-1, 0], [1, 0]]
+    full_move = diagonal_move + ortogonal_move
+    typical = full_move.map { |pair| go(*pair) }
+
+    {
+      typical: typical & board_edge,
+
+      special: [],
+
+      capture: typical & board_edge & player.adversary.pieces_coordinates
+    }
+  end
 
   def go(x_move, y_move)
     x = coordinates[0]

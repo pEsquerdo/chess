@@ -10,9 +10,17 @@
 
 <% @match_room.players.each do |player| %>
   <p>
+  <% if @match_room.moves.last.turn.eql? player.color %>
+    <strong><%= link_to player.color.capitalize + ' pieces:', permitted_moves_path(@move) %></strong>
+  <% else %>
     <strong><%= player.color.capitalize %> pieces:</strong>
+  <% end %>
     <% player.in_game_pieces.each do |piece| %>
-      (<%= link_to piece.family.capitalize + ' | ' + piece.coordinates, permitted_moves_path(@move, piece_id: piece) %>)
+      <% if @match_room.moves.last.turn.eql? player.color %>
+        (<%= link_to piece.family.capitalize + ' | ' + piece.coordinates, permitted_moves_path(@move, piece_id: piece) %>)
+      <% else %>
+        (<%= piece.family.capitalize + ' | ' + piece.coordinates %>)
+      <% end %>
     <% end %>
   </p>
 <% end %>

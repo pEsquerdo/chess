@@ -4,6 +4,7 @@ class Player < ApplicationRecord
 
   has_many :pieces
   has_many :moves
+  attr_reader :permitted_moves
 
   validates_presence_of :color
 
@@ -29,5 +30,12 @@ class Player < ApplicationRecord
 
   def in_game_pieces
     pieces.where.not(status: :captured)
+  end
+
+  def set_permitted_moves
+    @permitted_moves = {}
+    in_game_pieces.each do |piece|
+      @permitted_moves[piece.id.to_s] = piece.permitted_moves
+    end
   end
 end

@@ -1,10 +1,8 @@
 class MovesController < ApplicationController
-  before_action :set_piece, :set_move, only: %i[edit update]
-  before_action :move_to, only: %i[update]
+  before_action :set_piece, :set_player_moves, only: :edit
+  before_action :move_to, only: :update
 
-  def edit
-    @permitted_moves = @piece.permitted_moves
-  end
+  def edit; end
 
   def update
     respond_to do |format|
@@ -20,19 +18,21 @@ class MovesController < ApplicationController
 
   private
 
+  def set_player_moves
+    set_move
+    @move.player.set_permitted_moves # issue: colocar isso ao criar uma partida, ou ao atualizar uma peça (coloquei la mas nao esta funcionando)
+    @player_moves = @piece ? @move.player.permitted_moves[params[:piece_id]] : @move.player.permitted_moves
+  end
+
   def move_to
-    @move.to(@piece, params[:move_notation])
+    set_move.to(set_piece, params[:move_notation])
   end
 
   def set_piece
-    @piece = Piece.find(params[:piece_id])
+    @piece = Piece.find_by(id: params[:piece_id])
   end
 
   def set_move
     @move = Move.find(params[:id])
   end
-
-  # def move_params
-  #   params.require(:move).permit(:piece_id)
-  # end
 end

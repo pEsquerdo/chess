@@ -30,6 +30,10 @@ class MatchRoom < ApplicationRecord
     enable_first_move whites
   end
 
+  def enable_first_move(player)
+    moves.create(started_at: Time.current, player: player)
+  end
+
   def arrange_pieces
     players.each do |player|
       piece_types.each do |type|
@@ -37,11 +41,12 @@ class MatchRoom < ApplicationRecord
           player.pieces.create(family: type, coordinates: square)
         end
       end
+      calc_moves player
     end
   end
 
-  def enable_first_move(player)
-    moves.create(started_at: Time.current, player: player)
+  def calc_moves(player)
+    player.set_permitted_moves
   end
 
   def initial_coordinates
