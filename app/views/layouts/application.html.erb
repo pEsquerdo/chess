@@ -11,6 +11,24 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%= render 'shared/header' %>
+
+    <div>
+      <div style="display: inline-block; width: 30%;">
+        <% if user_signed_in? %>
+          <h5>Your Games</h5>
+          <ul>
+            <% current_user.match_rooms.each do |match_room| %>
+              <li><%= link_to match_room.name, match_room %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+      <div style="display: inline-block; width: 30%;">
+        <%= yield %>
+      </div>
+    </div>
+
+    <%= render 'shared/footer' %>
   </body>
 </html>

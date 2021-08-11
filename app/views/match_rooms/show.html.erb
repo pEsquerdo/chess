@@ -1,45 +1,43 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Match room name:</strong>
+  <strong>Game room:</strong>
   <%= @match_room.name %>
   <% if @match_room.ended_at.nil? %>
     (<span data-controller="timer" data-timer-start-value="<%= @match_room.started_at.to_i * 1000 %>" data-timer-refresh-interval-value="1000"></span>)
   <% else %>
     (<%= duration_display @match_room.duration %>)
   <% end %>
-  <%= link_to 'Edit', edit_match_room_path(@match_room) %> |
-  <%= link_to 'Back', match_rooms_path %>
 </p>
 
-<% @match_room.players.each do |player| %>
+<%# @match_room.players.each do |player| %>
   <p>
-  <% if @match_room.moves.last.turn.eql? player.color %>
-    <strong><%= link_to player.color.capitalize + ' pieces:', permitted_moves_path(@move) %></strong>
-  <% else %>
-    <strong><%= player.color.capitalize %> pieces:</strong>
-  <% end %>
-    <% player.in_game_pieces.each do |piece| %>
-      <% if @match_room.moves.last.turn.eql? player.color %>
-        (<%= link_to piece.family.capitalize + ' | ' + piece.coordinates, permitted_moves_path(@move, piece_id: piece) %>)
-      <% else %>
-        (<%= piece.family.capitalize + ' | ' + piece.coordinates %>)
-      <% end %>
-    <% end %>
+  <%# if @match_room.moves.last.turn.eql? player.color %>
+    <strong><%#= link_to player.color.capitalize + ' pieces:', permitted_moves_path(@move) %></strong>
+  <%# else %>
+    <strong><%#= player.color.capitalize %> pieces:</strong>
+  <%# end %>
+    <%# player.in_game_pieces.each do |piece| %>
+      <%# if @match_room.moves.last.turn.eql? player.color %>
+        (<%#= link_to piece.family.capitalize + ' | ' + piece.coordinates, permitted_moves_path(@move, piece_id: piece) %>)
+      <%# else %>
+        (<%#= piece.family.capitalize + ' | ' + piece.coordinates %>)
+      <%# end %>
+    <%# end %>
   </p>
-<% end %>
+<%# end %>
 
 <p>
   <strong>Moves:</strong>
-  <% @match_room.moves.each_with_index do |move, i| %>
+  <%# @match_room.moves.each_with_index do |move, i| %>
     <p>
-      <%= i + 1 %>: <%= move.notation || 'waiting for ' + move.turn %>
-      <% if move.ended_at.nil? %>
-        (<span data-controller="timer" data-timer-start-value="<%= move.started_at.to_i * 1000 %>" data-timer-refresh-interval-value="1000"></span>)
-      <% else %>
-        (<%= duration_display move.duration %>)
-      <% end %>
+      <%#= i + 1 %>: <%#= move.notation || 'waiting for ' + move.turn %>
+      <%# if move.ended_at.nil? %>
+        (<span data-controller="timer" data-timer-start-value="<%#= move.started_at.to_i * 1000 %>" data-timer-refresh-interval-value="1000"></span>)
+      <%# else %>
+        (<%#= duration_display move.duration %>)
+      <%# end %>
   </span>
     </p>
-  <% end %>
+  <%# end %>
 </p>

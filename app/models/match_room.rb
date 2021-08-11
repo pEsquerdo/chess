@@ -1,6 +1,7 @@
 # Defines the game initialization
 class MatchRoom < ApplicationRecord
   has_many :players
+  has_many :users, through: :players
   has_many :pieces, through: :players
   has_many :moves
 
@@ -12,7 +13,6 @@ class MatchRoom < ApplicationRecord
 
   after_create :prepare_game
   def prepare_game
-    define_players
     arrange_pieces
   end
 
@@ -24,15 +24,15 @@ class MatchRoom < ApplicationRecord
     end
   end
 
-  def define_players
-    players.create(color: :black, user: User.find_by(username: 'bot'))
-    whites = players.create(color: :white, user: User.find(1))
-    enable_first_move whites
-  end
+  # def define_players
+  #   players.create(color: :black, user: User.find_by(username: 'bot'))
+  #   whites = players.create(color: :white, user: User.find(1))
+  #   enable_first_move whites
+  # end
 
-  def enable_first_move(player)
-    moves.create(started_at: Time.current, player: player)
-  end
+  # def enable_first_move(player)
+  #   moves.create(started_at: Time.current, player: player)
+  # end
 
   def arrange_pieces
     players.each do |player|

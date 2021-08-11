@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :match_rooms
+  resources :match_rooms do
+    resource :players
+  end
   devise_for :users
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 

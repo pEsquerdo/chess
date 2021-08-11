@@ -17,6 +17,8 @@
         <td><%= link_to 'Show', match_room %></td>
         <td><%= link_to 'Edit', edit_match_room_path(match_room) %></td>
         <td><%= link_to 'Destroy', match_room, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Join', match_room_players_path(match_room), method: :post %></td>
+        <td><%= link_to 'Leave', match_room_players_path(match_room), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
