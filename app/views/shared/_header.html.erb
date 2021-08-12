@@ -3,7 +3,7 @@
     <%= link_to "Chess", root_path %>
   </span>
   <% if user_signed_in? %>
-      < Loged as: <%= current_user.username %> >
+      <strong>< Loged as: <%= current_user.username %> ></strong>
     <%= link_to "Settings", edit_user_registration_path %>
     <%= link_to "Logout", destroy_user_session_path, method: :delete %>
   <% else %>

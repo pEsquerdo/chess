@@ -1,6 +1,6 @@
 class MatchRoomsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_match_room, only: %i[show edit update destroy]
+  before_action :set_match_room, :set_player, only: %i[show edit update destroy]
 
   # GET /match_rooms or /match_rooms.json
   def index
@@ -62,16 +62,12 @@ class MatchRoomsController < ApplicationController
     @match_room = MatchRoom.find(params[:id])
   end
 
-  # def set_move
-  #   @move = @match_room.moves.last
-
-  #   return unless @move.ended_at
-
-  #   @move = @match_room.moves.create(started_at: @move.ended_at, player: @move.player.adversary)
-  # end
-
   # Only allow a list of trusted parameters through.
   def match_room_params
-    params.require(:match_room).permit(:name)
+    params.require(:match_room).permit(:name, :started_at, :ended_at)
+  end
+
+  def set_player
+    @player = @match_room.players.find_by(user_id: current_user.id)
   end
 end

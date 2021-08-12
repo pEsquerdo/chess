@@ -10,34 +10,49 @@
   <% end %>
 </p>
 
-<%# @match_room.players.each do |player| %>
+<% if @match_room.players.any? && @player %>
+
+  <p><strong>picked color: <%= @player.color %></strong></p>
   <p>
-  <%# if @match_room.moves.last.turn.eql? player.color %>
-    <strong><%#= link_to player.color.capitalize + ' pieces:', permitted_moves_path(@move) %></strong>
-  <%# else %>
-    <strong><%#= player.color.capitalize %> pieces:</strong>
-  <%# end %>
-    <%# player.in_game_pieces.each do |piece| %>
-      <%# if @match_room.moves.last.turn.eql? player.color %>
-        (<%#= link_to piece.family.capitalize + ' | ' + piece.coordinates, permitted_moves_path(@move, piece_id: piece) %>)
-      <%# else %>
-        (<%#= piece.family.capitalize + ' | ' + piece.coordinates %>)
-      <%# end %>
-    <%# end %>
+    <strong><%= 'your pieces:' %></strong>
+    <% @player.in_game_pieces.each do |piece| %>
+      <% if @player.turn? %>
+        <%= link_to "(#{piece.family.capitalize} | #{piece.coordinates})", new_match_room_move_path(@match_room, piece_id: piece.id) %>
+      <% else %>
+        (<%= piece.family.capitalize + ' | ' + piece.coordinates %>)
+      <% end %>
+    <% end %>
   </p>
-<%# end %>
+
+  <p>
+    <strong><%= 'opponent: '+ @player.adversary.user.username %></strong> <br>
+    <strong><%= 'enemy pieces:' %></strong>
+    <% @player.adversary.in_game_pieces.each do |piece| %>
+      (<%= piece.family.capitalize + ' | ' + piece.coordinates %>)
+    <% end %>
+  </p>
+<% elsif @match_room.players.any? && @player.nil? %>
+  <% @match_room.players.each do |player| %>
+    <p>
+      <strong><%= 'user: '+ player.user.username %></strong> <br>
+      <strong><%= player.color + ' pieces:' %></strong>
+      <% player.in_game_pieces.each do |piece| %>
+        (<%= piece.family.capitalize + ' | ' + piece.coordinates %>)
+      <% end %>
+    </p>
+  <% end %>
+<% end %>
 
 <p>
   <strong>Moves:</strong>
-  <%# @match_room.moves.each_with_index do |move, i| %>
+  <% @match_room.moves.each_with_index do |move, i| %>
     <p>
-      <%#= i + 1 %>: <%#= move.notation || 'waiting for ' + move.turn %>
-      <%# if move.ended_at.nil? %>
-        (<span data-controller="timer" data-timer-start-value="<%#= move.started_at.to_i * 1000 %>" data-timer-refresh-interval-value="1000"></span>)
-      <%# else %>
-        (<%#= duration_display move.duration %>)
-      <%# end %>
-  </span>
+      <%= i + 1 %>: <%= move.notation || 'waiting for ' + move.turn %>
+      <% if move.ended_at.nil? %>
+        (<span data-controller="timer" data-timer-start-value="<%= move.started_at.to_i * 1000 %>" data-timer-refresh-interval-value="1000"></span>)
+      <% else %>
+        (<%= duration_display move.duration %>)
+      <% end %>
     </p>
-  <%# end %>
+  <% end %>
 </p>
